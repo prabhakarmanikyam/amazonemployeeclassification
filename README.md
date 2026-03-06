@@ -91,3 +91,67 @@ jupyter notebook prabhaker_manikyam.ipynb
 - Test Data: amazon_employee_access_test.csv
 
 ### After evaluating the test dataset: True positive rate, False positive rate and accuracy are displayed at the end of the notebook.
+## Potential Improvement with Positive Impact
+
+One high-impact improvement is to **eliminate evaluation data leakage** by ensuring the final evaluation block reads from `amazon_employee_access_test.csv` (or any true holdout file) instead of the training dataset.
+
+### Why this matters
+- Evaluating on training data can inflate reported performance and lead to overconfidence.
+- Evaluating on a true holdout set gives a more realistic estimate of production performance.
+- This improves trust in model quality and helps make better deployment decisions.
+
+### Additional upgrade to consider
+Use **StratifiedKFold cross-validation with ROC-AUC** as the primary metric (along with Accuracy). This usually gives a more robust view of classification quality, especially when class distribution is imbalanced.
+
+## Next Step After Creating the YAML (GitHub Actions)
+
+If your YAML is a GitHub Actions workflow, place it under `.github/workflows/` (for example: `.github/workflows/ml-ci.yml`).
+
+Then:
+1. Commit and push to GitHub.
+2. Open the **Actions** tab in your repository.
+3. Verify the workflow run passes.
+4. If it fails, open the failed step logs and fix the reported issue.
+
+This repository now includes a workflow that validates:
+- notebook JSON structure,
+- required project files,
+- and expected training-dataset schema.
+
+## Deploy and Run (API)
+
+If you want to deploy and run this project as a prediction API, use the files added in this repo:
+- `train_model.py` (trains and saves model to `artifacts/model.joblib`)
+- `app.py` (Flask API with `/health` and `/predict`)
+- `Dockerfile` and `requirements.txt`
+
+### Local run
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+2. Train and save model:
+```bash
+python train_model.py
+```
+3. Start API server:
+```bash
+python app.py
+```
+4. Test health:
+```bash
+curl http://localhost:8000/health
+```
+5. Test prediction:
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"RESOURCE":39353,"MGR_ID":85475,"ROLE_ROLLUP_1":117961,"ROLE_ROLLUP_2":118300,"ROLE_DEPTNAME":123472,"ROLE_TITLE":117905,"ROLE_FAMILY_DESC":117906,"ROLE_FAMILY":290919,"ROLE_CODE":117908}'
+```
+
+### Docker run
+```bash
+docker build -t employee-access-api .
+docker run -p 8000:8000 employee-access-api
+```
+
