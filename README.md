@@ -91,3 +91,30 @@ jupyter notebook prabhaker_manikyam.ipynb
 - Test Data: amazon_employee_access_test.csv
 
 ### After evaluating the test dataset: True positive rate, False positive rate and accuracy are displayed at the end of the notebook.
+## Potential Improvement with Positive Impact
+
+One high-impact improvement is to **eliminate evaluation data leakage** by ensuring the final evaluation block reads from `amazon_employee_access_test.csv` (or any true holdout file) instead of the training dataset.
+
+### Why this matters
+- Evaluating on training data can inflate reported performance and lead to overconfidence.
+- Evaluating on a true holdout set gives a more realistic estimate of production performance.
+- This improves trust in model quality and helps make better deployment decisions.
+
+### Additional upgrade to consider
+Use **StratifiedKFold cross-validation with ROC-AUC** as the primary metric (along with Accuracy). This usually gives a more robust view of classification quality, especially when class distribution is imbalanced.
+
+## Next Step After Creating the YAML (GitHub Actions)
+
+If your YAML is a GitHub Actions workflow, place it under `.github/workflows/` (for example: `.github/workflows/ml-ci.yml`).
+
+Then:
+1. Commit and push to GitHub.
+2. Open the **Actions** tab in your repository.
+3. Verify the workflow run passes.
+4. If it fails, open the failed step logs and fix the reported issue.
+
+This repository now includes a workflow that validates:
+- notebook JSON structure,
+- required project files,
+- and expected training-dataset schema.
+
