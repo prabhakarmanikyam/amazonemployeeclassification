@@ -118,3 +118,40 @@ This repository now includes a workflow that validates:
 - required project files,
 - and expected training-dataset schema.
 
+## Deploy and Run (API)
+
+If you want to deploy and run this project as a prediction API, use the files added in this repo:
+- `train_model.py` (trains and saves model to `artifacts/model.joblib`)
+- `app.py` (Flask API with `/health` and `/predict`)
+- `Dockerfile` and `requirements.txt`
+
+### Local run
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+2. Train and save model:
+```bash
+python train_model.py
+```
+3. Start API server:
+```bash
+python app.py
+```
+4. Test health:
+```bash
+curl http://localhost:8000/health
+```
+5. Test prediction:
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"RESOURCE":39353,"MGR_ID":85475,"ROLE_ROLLUP_1":117961,"ROLE_ROLLUP_2":118300,"ROLE_DEPTNAME":123472,"ROLE_TITLE":117905,"ROLE_FAMILY_DESC":117906,"ROLE_FAMILY":290919,"ROLE_CODE":117908}'
+```
+
+### Docker run
+```bash
+docker build -t employee-access-api .
+docker run -p 8000:8000 employee-access-api
+```
+
