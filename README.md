@@ -102,3 +102,19 @@ One high-impact improvement is to **eliminate evaluation data leakage** by ensur
 
 ### Additional upgrade to consider
 Use **StratifiedKFold cross-validation with ROC-AUC** as the primary metric (along with Accuracy). This usually gives a more robust view of classification quality, especially when class distribution is imbalanced.
+
+## Next Step After Creating the YAML (GitHub Actions)
+
+If your YAML is a GitHub Actions workflow, place it under `.github/workflows/` (for example: `.github/workflows/ml-ci.yml`).
+
+Then:
+1. Commit and push to GitHub.
+2. Open the **Actions** tab in your repository.
+3. Verify the workflow run passes.
+4. If it fails, open the failed step logs and fix the reported issue.
+
+This repository now includes a workflow that validates:
+- notebook JSON structure,
+- required project files,
+- and expected training-dataset schema.
+
